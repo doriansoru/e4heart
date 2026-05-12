@@ -1,5 +1,9 @@
 # e4heart (Native Wear OS)
 
+<p align="center">
+  <img src="app/src/main/res/drawable/preview.png" width="250" alt="e4heart Preview">
+</p>
+
 Applicazione nativa per Wear OS sviluppata in Kotlin e Jetpack Compose per il monitoraggio della frequenza cardiaca in tempo reale, ottimizzata per il **pacing del PEM** (Post-Exertional Malaise).
 
 ## Descrizione e finalità
