@@ -26,9 +26,46 @@ La logica dell'app si basa sulle linee guida della **Workwell Foundation** per i
 - Avvisi via vibrazione: allarme iniziale discreto e promemoria insistenti se il battito non scende.
 - **Ambient mode**: Ottimizzazione della luminosità notturna per visibilità continua senza bagliore.
 
-## Requisiti
-- Android SDK (API 34)
+## Guida allo sviluppo e compilazione
+Il progetto è un'applicazione Android nativa basata su Gradle. Puoi compilarla utilizzando i comandi semplificati del `Makefile` o direttamente tramite Gradle.
+
+### Prerequisiti
+- **Java Development Kit (JDK)**: Versione 17 o superiore.
+- **Android SDK**: API 34 (Android 14) installata.
+- **ADB (Android Debug Bridge)**: Necessario per l'installazione e il debug sull'orologio.
+- **Android Studio (opzionale)**: Consigliato per lo sviluppo e l'anteprima dell'interfaccia.
+
+### Compilazione e installazione
+Apri il terminale nella cartella del progetto e usa i seguenti comandi:
+
+1.  **Compilazione (Generazione APK)**:
+    ```bash
+    make build
+    ```
+    (Oppure `./gradlew assembleDebug`)
+
+2.  **Installazione ed esecuzione**:
+    Assicurati che l'orologio sia connesso via ADB (Wi-Fi o Bluetooth Debugging) e digita:
+    ```bash
+    make run
+    ```
+    (Questo comando installa l'APK e avvia l'attività principale sul dispositivo).
+
+3.  **Monitoraggio dei log**:
+    Per visualizzare i messaggi di sistema dell'app (filtrati per `e4heart`):
+    ```bash
+    make log
+    ```
+
+4.  **Pulizia**:
+    Se riscontri problemi di build, pulisci i file temporanei:
+    ```bash
+    make clean
+    ```
+
+## Requisiti hardware
 - Qualsiasi orologio Wear OS con sensore cardiaco.
+- Android 9.0 (API 28) o superiore.
 
 ## ⚠️ Disclaimer medico
 Questa applicazione **non è un dispositivo medico**. I dati forniti sono solo a scopo informativo e di supporto al monitoraggio personale (es. PEM pacing). L'app non deve essere utilizzata per diagnosticare, trattare o prevenire alcuna patologia. Consulta sempre un medico professionista per decisioni riguardanti la tua salute.
