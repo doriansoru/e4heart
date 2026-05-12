@@ -1,77 +1,79 @@
 # e4heart (Native Wear OS)
 
+[Italiano 🇮🇹](./README.it.md) | **English 🇺🇸**
+
 <p align="center">
   <img src="app/src/main/res/drawable/preview.png" width="250" alt="e4heart Preview">
 </p>
 
-Applicazione nativa per Wear OS sviluppata in Kotlin e Jetpack Compose per il monitoraggio della frequenza cardiaca in tempo reale, ottimizzata per il **pacing del PEM** (Post-Exertional Malaise).
+Native Wear OS application developed in Kotlin and Jetpack Compose for real-time heart rate monitoring, optimized for **PEM pacing** (Post-Exertional Malaise).
 
-## Descrizione e finalità
-L'app è progettata specificamente per supportare persone affette da **ME/CFS** e **Long COVID** nella gestione della propria energia attraverso il monitoraggio del battito cardiaco. L'obiettivo è prevenire il superamento della soglia anaerobica ventilatoria (V/AT), riducendo così il rischio di ricadute (crash) dovute allo sforzo.
+## Description and Purpose
+The app is specifically designed to support individuals suffering from **ME/CFS** and **Long COVID** in managing their energy through heart rate monitoring. The goal is to prevent exceeding the ventilatory anaerobic threshold (V/AT), thereby reducing the risk of exertion-related relapses (crashes).
 
-## Logica di monitoraggio e basi scientifiche
-La logica dell'app si basa sulle linee guida della **Workwell Foundation** per il pacing cardiaco:
+## Monitoring Logic and Scientific Basis
+The app's logic is based on the **Workwell Foundation** guidelines for heart rate pacing:
 
-1.  **Calcolo della soglia (Alert)**: La soglia di allerta è impostata a **RHR + 15 BPM** (Resting Heart Rate + 15). Questo valore è un'approssimazione prudente della soglia anaerobica per chi soffre di patologie legate al PEM.
-2.  **Regola dei due minuti**: Seguendo le indicazioni scientifiche ("Avoid spending time above the V/AT for more than two minutes"), l'app attiva la vibrazione solo se il battito rimane sopra la soglia in modo continuativo per almeno 120 secondi. Questo evita falsi positivi dovuti a brevi picchi (spike) momentanei.
-3.  **Soglia di recupero (Recovery)**: Seguendo le raccomandazioni della fondazione, l'allerta cessa solo quando il battito scende entro 10 BPM dalla frequenza a riposo (**RHR + 10 BPM**). Questo assicura che il corpo abbia recuperato sufficientemente prima di riprendere l'attività.
+1.  **Threshold Calculation (Alert)**: The alert threshold is set to **RHR + 15 BPM** (Resting Heart Rate + 15). This value is a conservative approximation of the anaerobic threshold for those suffering from PEM-related conditions.
+2.  **Two-Minute Rule**: Following scientific guidelines ("Avoid spending time above the V/AT for more than two minutes"), the app activates vibration only if the heart rate remains above the threshold continuously for at least 120 seconds. This avoids false positives due to brief momentary spikes.
+3.  **Recovery Threshold**: Following the foundation's recommendations, the alert stops only when the heart rate falls within 10 BPM of the resting rate (**RHR + 10 BPM**). This ensures the body has recovered sufficiently before resuming activity.
 
-**Fonte**: [Workwell Foundation - Pacing with a heart rate monitor](https://workwellfoundation.org/pacing-with-a-heart-rate-monitor-to-minimize-post-exertional-malaise-pem-in-me-cfs-and-long-covid/)
+**Source**: [Workwell Foundation - Pacing with a heart rate monitor](https://workwellfoundation.org/pacing-with-a-heart-rate-monitor-to-minimize-post-exertional-malaise-pem-in-me-cfs-and-long-covid/)
 
-## Funzionalità
-- Monitoraggio continuo del battito cardiaco.
-- Interfaccia ottimizzata per schermi circolari.
-- **Internazionalizzazione**: Supporto completo per italiano e inglese.
-- Slider di precisione (step di 1 BPM) per impostare il proprio battito a riposo (RHR).
-- Avvisi via vibrazione: allarme iniziale discreto e promemoria insistenti se il battito non scende.
-- **Ambient mode**: Ottimizzazione della luminosità notturna per visibilità continua senza bagliore.
+## Features
+- Continuous heart rate monitoring.
+- Interface optimized for circular screens.
+- **Internationalization**: Full support for Italian and English.
+- Precision slider (1 BPM steps) to set your Resting Heart Rate (RHR).
+- Vibration alerts: discrete initial alarm and persistent reminders if the heart rate doesn't drop.
+- **Ambient mode**: Night brightness optimization for continuous visibility without glare.
 
-## Guida allo sviluppo e compilazione
-Il progetto è un'applicazione Android nativa basata su Gradle. Puoi compilarla utilizzando i comandi semplificati del `Makefile` o direttamente tramite Gradle.
+## Development and Compilation Guide
+The project is a native Android application based on Gradle. You can compile it using simplified `Makefile` commands or directly via Gradle.
 
-### Prerequisiti
-- **Java Development Kit (JDK)**: Versione 17 o superiore.
-- **Android SDK**: API 34 (Android 14) installata.
-- **ADB (Android Debug Bridge)**: Necessario per l'installazione e il debug sull'orologio.
-- **Android Studio (opzionale)**: Consigliato per lo sviluppo e l'anteprima dell'interfaccia.
+### Prerequisites
+- **Java Development Kit (JDK)**: Version 17 or higher.
+- **Android SDK**: API 34 (Android 14) installed.
+- **ADB (Android Debug Bridge)**: Required for installation and debugging on the watch.
+- **Android Studio (optional)**: Recommended for development and UI preview.
 
-### Compilazione e installazione
-Apri il terminale nella cartella del progetto e usa i seguenti comandi:
+### Compilation and Installation
+Open the terminal in the project folder and use the following commands:
 
-1.  **Compilazione (Generazione APK)**:
+1.  **Compilation (APK Generation)**:
     ```bash
     make build
     ```
-    (Oppure `./gradlew assembleDebug`)
+    (Or `./gradlew assembleDebug`)
 
-2.  **Installazione ed esecuzione**:
-    Assicurati che l'orologio sia connesso via ADB (Wi-Fi o Bluetooth Debugging) e digita:
+2.  **Installation and Execution**:
+    Ensure the watch is connected via ADB (Wi-Fi or Bluetooth Debugging) and type:
     ```bash
     make run
     ```
-    (Questo comando installa l'APK e avvia l'attività principale sul dispositivo).
+    (This command installs the APK and starts the main activity on the device).
 
-3.  **Monitoraggio dei log**:
-    Per visualizzare i messaggi di sistema dell'app (filtrati per `e4heart`):
+3.  **Log Monitoring**:
+    To view the app's system messages (filtered for `e4heart`):
     ```bash
     make log
     ```
 
-4.  **Pulizia**:
-    Se riscontri problemi di build, pulisci i file temporanei:
+4.  **Cleaning**:
+    If you encounter build issues, clean the temporary files:
     ```bash
     make clean
     ```
 
-## Requisiti hardware
-- Qualsiasi orologio Wear OS con sensore cardiaco.
-- Android 9.0 (API 28) o superiore.
+## Hardware Requirements
+- Any Wear OS watch with a heart rate sensor.
+- Android 9.0 (API 28) or higher.
 
-## ⚠️ Disclaimer medico
-Questa applicazione **non è un dispositivo medico**. I dati forniti sono solo a scopo informativo e di supporto al monitoraggio personale (es. PEM pacing). L'app non deve essere utilizzata per diagnosticare, trattare o prevenire alcuna patologia. Consulta sempre un medico professionista per decisioni riguardanti la tua salute.
+## ⚠️ Medical Disclaimer
+This application is **not a medical device**. The data provided is for informational and personal monitoring support purposes only (e.g., PEM pacing). The app must not be used to diagnose, treat, or prevent any medical condition. Always consult a medical professional for health-related decisions.
 
-## Licenza
-Distribuito sotto licenza **GNU GPLv3**. Vedi il file `LICENSE` per i dettagli.
+## License
+Distributed under the **GNU GPLv3** license. See the `LICENSE` file for details.
 
-## Note sullo sviluppo
-Questo progetto è assistito da **Gemini CLI**, che ha curato l'implementazione dell'internazionalizzazione, l'ottimizzazione della logica di pacing basata su fonti scientifiche e l'aggiornamento della documentazione.
+## Development Notes
+This project was assisted by **Gemini CLI**, which handled the implementation of internationalization, the optimization of pacing logic based on scientific sources, and the documentation update.
