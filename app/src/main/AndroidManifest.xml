@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BIND_WALLPAPER" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-feature android:name="android.hardware.type.watch" />
+    <uses-feature android:name="android.hardware.sensor.heartrate" android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/preview"
+        android:label="e4heart"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+        
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".HeartRateService"
+            android:foregroundServiceType="health"
+            android:exported="false" />
+
+        <service
+            android:name=".HeartComplicationService"
+            android:icon="@drawable/preview"
+            android:label="e4heart"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".MyWatchFaceService"
+            android:exported="true"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:label="e4heart">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <action android:name="androidx.wear.watchface.WatchFaceService" />
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face_info" />
+            <meta-data
+                android:name="androidx.wear.watchface.XmlWatchFaceSettings"
+                android:resource="@xml/watch_face_config" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview" />
+        </service>
+
+        <service
+            android:name=".HeartRateTileService"
+            android:icon="@drawable/preview"
+            android:label="e4heart"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/preview" />
+        </service>
+    </application>
+
+</manifest>

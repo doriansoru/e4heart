@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">e4heart</string>
+    <string name="current_bpm_label">BATTITO ATTUALE</string>
+    <string name="resting_hr_label">TUO RIPOSO (RHR): %1$d</string>
+    <string name="rec_label">REC</string>
+    <string name="alert_label">ALERT</string>
+    <string name="how_it_works_title">Come funziona</string>
+    <string name="how_it_works_content">1. Imposta il tuo battito a riposo (RHR).\n2. Se superi %1$d BPM per più di 2 minuti, l\'app vibra.\n3. Riposati finché non scendi sotto %2$d BPM (Rec).</string>
+    <string name="ok_button">OK</string>
+    
+    <string name="service_active_title">e4heart Attivo</string>
+    <string name="service_monitoring_msg">Monitoraggio battito in corso...</string>
+    <string name="service_alert_msg">ATTENZIONE: Battito alto! Riposati.</string>
+    <string name="notification_channel_name">Monitoraggio Cardiaco</string>
+    
+    <string name="tile_label">BATTITO</string>
+    <string name="watchface_battery_label">BAT %1$d%%</string>
+    <string name="watchface_bpm_unit">BPM</string>
+</resources>

@@ -1,0 +1,17 @@
+# Gradle
+.gradle/
+build/
+/*/build/
+
+# Android Studio
+*.iml
+.idea/
+local.properties
+.DS_Store
+.externalNativeBuild
+.cxx
+
+# Backup files
+*.bak
+*.swp
+*~
