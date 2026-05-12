@@ -14,7 +14,7 @@ La logica dell'app si basa sulle linee guida della **Workwell Foundation** per i
 
 1.  **Calcolo della soglia (Alert)**: La soglia di allerta è impostata a **RHR + 15 BPM** (Resting Heart Rate + 15). Questo valore è un'approssimazione prudente della soglia anaerobica per chi soffre di patologie legate al PEM.
 2.  **Regola dei due minuti**: Seguendo le indicazioni scientifiche ("Avoid spending time above the V/AT for more than two minutes"), l'app attiva la vibrazione solo se il battito rimane sopra la soglia in modo continuativo per almeno 120 secondi. Questo evita falsi positivi dovuti a brevi picchi (spike) momentanei.
-3.  **Soglia di recupero (Recovery)**: L'allerta cessa solo quando il battito scende sotto **RHR + 10 BPM**. Questo margine di sicurezza garantisce che il cuore sia tornato in uno stato di stabilità prima di considerare concluso lo sforzo.
+3.  **Soglia di recupero (Recovery)**: Seguendo le raccomandazioni della fondazione, l'allerta cessa solo quando il battito scende entro 10 BPM dalla frequenza a riposo (**RHR + 10 BPM**). Questo assicura che il corpo abbia recuperato sufficientemente prima di riprendere l'attività.
 
 **Fonte**: [Workwell Foundation - Pacing with a heart rate monitor](https://workwellfoundation.org/pacing-with-a-heart-rate-monitor-to-minimize-post-exertional-malaise-pem-in-me-cfs-and-long-covid/)
 
