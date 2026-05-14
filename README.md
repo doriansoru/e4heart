@@ -27,6 +27,8 @@ The app's logic is based on the **Workwell Foundation** guidelines for heart rat
 - Precision slider (1 BPM steps) to set your Resting Heart Rate (RHR).
 - Vibration alerts: discrete initial alarm and persistent reminders if the heart rate doesn't drop.
 - **Ambient mode**: Night brightness optimization for continuous visibility without glare.
+- **Extreme Energy Efficiency**: Hardware-batched sensor events and smart updates to drastically save background battery.
+- **Reactive UI**: `StateFlow` architecture for superior smoothness and lower foreground power consumption.
 
 ## Development and Compilation Guide
 The project is a native Android application based on Gradle. You can compile it using simplified `Makefile` commands or directly via Gradle.

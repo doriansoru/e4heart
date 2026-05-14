@@ -27,6 +27,8 @@ La logica dell'app si basa sulle linee guida della **Workwell Foundation** per i
 - Slider di precisione (step di 1 BPM) per impostare il proprio battito a riposo (RHR).
 - Avvisi via vibrazione: allarme iniziale discreto e promemoria insistenti se il battito non scende.
 - **Ambient mode**: Ottimizzazione della luminosità notturna per visibilità continua senza bagliore.
+- **Efficienza Energetica Estrema**: Sensore con hardware batching e logica di aggiornamento intelligente per preservare la batteria.
+- **UI Reattiva**: Architettura `StateFlow` per una fluidità superiore e minor consumo in primo piano.
 
 ## Guida allo sviluppo e compilazione
 Il progetto è un'applicazione Android nativa basata su Gradle. Puoi compilarla utilizzando i comandi semplificati del `Makefile` o direttamente tramite Gradle.

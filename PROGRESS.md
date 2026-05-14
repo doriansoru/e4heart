@@ -18,10 +18,12 @@
 - [x] Ottimizzazione luminosità notturna in Ambient Mode (grigi attenuati anti-bagliore).
 - [x] Sincronizzazione totale stato di allerta tra vibrazione e colori (UI + Quadrante).
 - [x] Watchdog automatico per ripristino sensore cardio in caso di sospensione.
+- [x] Ottimizzazione estrema consumo batteria (Hardware Batching sensore).
+- [x] Architettura reattiva UI (`StateFlow`) al posto del polling.
+- [x] Aggiornamento intelligente di Tile e Complication (basato su delta BPM).
 
 ## Prossimi passi
 - [ ] Aggiunta di un grafico storico del battito.
-- [ ] Ottimizzazione ulteriore del consumo batteria in background.
 
 ---
 *Documentazione e i18n aggiornati da Gemini CLI.*

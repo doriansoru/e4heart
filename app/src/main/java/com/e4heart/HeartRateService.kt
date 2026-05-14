@@ -21,6 +21,9 @@ import android.os.*
 import androidx.core.app.NotificationCompat
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import android.content.ComponentName
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlin.math.abs
 
 class HeartRateService : Service(), SensorEventListener {
     private var sensorManager: SensorManager? = null
@@ -49,7 +52,7 @@ class HeartRateService : Service(), SensorEventListener {
         sensorManager?.unregisterListener(this)
         isSensorRegistered = false
         heartRateSensor?.let {
-            val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+            val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, 3000000)
             isSensorRegistered = registered ?: false
             lastSensorEventTime = System.currentTimeMillis()
             android.util.Log.d("e4heart", "Watchdog: sensore riregistrato: $isSensorRegistered")
@@ -59,8 +62,21 @@ class HeartRateService : Service(), SensorEventListener {
     companion object {
         const val CHANNEL_ID = "HeartRateChannel"
         const val NOTIFICATION_ID = 1
-        var currentBpm = 0
-        var isAlerting = false
+        
+        private val _bpmFlow = MutableStateFlow(0)
+        val bpmFlow = _bpmFlow.asStateFlow()
+
+        private val _alertFlow = MutableStateFlow(false)
+        val alertFlow = _alertFlow.asStateFlow()
+        
+        // Esposti come var/val per retrocompatibilità limitata (MyWatchFaceService usa currentBpm)
+        var currentBpm: Int
+            get() = _bpmFlow.value
+            private set(value) { _bpmFlow.value = value }
+            
+        var isAlertingGlobal: Boolean
+            get() = _alertFlow.value
+            private set(value) { _alertFlow.value = value }
     }
 
     override fun onCreate() {
@@ -141,7 +157,7 @@ class HeartRateService : Service(), SensorEventListener {
         
         if (!isSensorRegistered) {
             heartRateSensor?.let {
-                val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+                val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, 3000000)
                 isSensorRegistered = registered ?: false
                 android.util.Log.d("e4heart", "Registrazione listener sensore: $isSensorRegistered")
             }
@@ -176,6 +192,7 @@ class HeartRateService : Service(), SensorEventListener {
     }
 
     private var lastComplicationUpdateTime = 0L
+    private var lastReportedBpm = 0
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
@@ -201,8 +218,13 @@ class HeartRateService : Service(), SensorEventListener {
             checkThreshold(bpm)
             
             val currentTime = System.currentTimeMillis()
-            if (currentTime - lastComplicationUpdateTime > 10000) {
+            val timeSinceLastUpdate = currentTime - lastComplicationUpdateTime
+            val bpmDelta = abs(bpm - lastReportedBpm)
+            
+            // Aggiorna Complication/Tile solo se il battito cambia di >= 3 BPM o se è passato almeno 1 minuto
+            if (bpmDelta >= 3 || timeSinceLastUpdate > 60000) {
                 lastComplicationUpdateTime = currentTime
+                lastReportedBpm = bpm
                 updateComplication()
                 updateTile()
             }
@@ -223,7 +245,7 @@ class HeartRateService : Service(), SensorEventListener {
             if (timeAboveThreshold >= 120000) { // 2 minuti (120.000 ms)
                 if (!isAlerting) {
                     isAlerting = true
-                    HeartRateService.isAlerting = true
+                    isAlertingGlobal = true
                     vibrate(false) // Vibrazione discreta iniziale
                     lastAlertVibrationTime = currentTime
                     lastBpmDuringAlert = bpm
@@ -251,7 +273,7 @@ class HeartRateService : Service(), SensorEventListener {
                 // Siamo in allarme, aspettiamo il rientro entro RHR + 10 (Recupero)
                 if (bpm <= rhr + 10) {
                     isAlerting = false
-                    HeartRateService.isAlerting = false
+                    isAlertingGlobal = false
                     aboveThresholdStartTime = 0L
                     updateNotification()
                     android.util.Log.d("e4heart", "RECUPERO COMPLETATO: Battito $bpm <= ${rhr + 10}")

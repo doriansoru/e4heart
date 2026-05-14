@@ -154,7 +154,7 @@ class MyCanvasRenderer(
         
         // Colore battito: Rosso se allerta, altrimenti grigio tenue in ambient o bianco in attivo
         heartPaint.color = when {
-            HeartRateService.isAlerting -> Color.RED
+            HeartRateService.isAlertingGlobal -> Color.RED
             isAmbient -> ambientMainColor
             else -> Color.WHITE
         }

@@ -53,18 +53,11 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         checkPermissions()
 
         setContent {
-            // Usiamo il valore corrente dal servizio
-            val bpmValue = remember { mutableIntStateOf(HeartRateService.currentBpm) }
-            
-            // Effetto per aggiornare la UI periodicamente
-            LaunchedEffect(Unit) {
-                while(true) {
-                    bpmValue.intValue = HeartRateService.currentBpm
-                    kotlinx.coroutines.delay(1000)
-                }
-            }
+            // Usiamo il Flow esposto dal servizio
+            val bpmValue by HeartRateService.bpmFlow.collectAsState()
+            val isAlerting by HeartRateService.alertFlow.collectAsState()
 
-            WearApp(bpmValue.intValue, rhrState.floatValue) { newValue ->
+            WearApp(bpmValue, rhrState.floatValue, isAlerting) { newValue ->
                 rhrState.floatValue = newValue
                 saveSettings(newValue)
                 startHeartRateService() // Riavvia per aggiornare parametri
@@ -139,7 +132,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 }
 
 @Composable
-fun WearApp(bpm: Int, rhr: Float, onRhrChange: (Float) -> Unit) {
+fun WearApp(bpm: Int, rhr: Float, isAlerting: Boolean, onRhrChange: (Float) -> Unit) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val threshold = rhr + 15
     val recoveryLimit = rhr + 10
@@ -196,7 +189,7 @@ fun WearApp(bpm: Int, rhr: Float, onRhrChange: (Float) -> Unit) {
                                 text = if (bpm > 0) bpm.toString() else "--",
                                 fontSize = 44.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (HeartRateService.isAlerting) Color.Red else Color.White
+                                color = if (isAlerting) Color.Red else Color.White
                             )
                             Text(
                                 androidx.compose.ui.res.stringResource(R.string.current_bpm_label),
