@@ -18,7 +18,6 @@
 - [x] Ottimizzazione luminosità notturna in Ambient Mode (grigi attenuati anti-bagliore).
 - [x] Sincronizzazione totale stato di allerta tra vibrazione e colori (UI + Quadrante).
 - [x] Watchdog automatico per ripristino sensore cardio in caso di sospensione.
-- [x] Ottimizzazione estrema consumo batteria (Hardware Batching sensore).
 - [x] Architettura reattiva UI (`StateFlow`) al posto del polling.
 - [x] Aggiornamento intelligente di Tile e Complication (basato su delta BPM).
 

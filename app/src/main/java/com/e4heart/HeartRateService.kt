@@ -52,7 +52,7 @@ class HeartRateService : Service(), SensorEventListener {
         sensorManager?.unregisterListener(this)
         isSensorRegistered = false
         heartRateSensor?.let {
-            val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, 3000000)
+            val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
             isSensorRegistered = registered ?: false
             lastSensorEventTime = System.currentTimeMillis()
             android.util.Log.d("e4heart", "Watchdog: sensore riregistrato: $isSensorRegistered")
@@ -157,7 +157,7 @@ class HeartRateService : Service(), SensorEventListener {
         
         if (!isSensorRegistered) {
             heartRateSensor?.let {
-                val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL, 3000000)
+                val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
                 isSensorRegistered = registered ?: false
                 android.util.Log.d("e4heart", "Registrazione listener sensore: $isSensorRegistered")
             }
