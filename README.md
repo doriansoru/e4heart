@@ -27,6 +27,7 @@ The app's logic is based on the **Workwell Foundation** guidelines for heart rat
 - Precision slider (1 BPM steps) to set your Resting Heart Rate (RHR).
 - Vibration alerts: discrete initial alarm and persistent reminders if the heart rate doesn't drop.
 - **Ambient mode**: Night brightness optimization for continuous visibility without glare.
+- **Pause/Resume**: Quick toggle (app or notification) to stop monitoring during charging, physically disconnecting the sensor to save energy.
 - **Energy Efficiency**: Smart background update logic for Tile and Complications to preserve battery.
 - **Reactive UI**: `StateFlow` architecture for superior smoothness and lower foreground power consumption.
 

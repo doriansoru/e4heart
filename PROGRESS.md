@@ -20,6 +20,8 @@
 - [x] Watchdog automatico per ripristino sensore cardio in caso di sospensione.
 - [x] Architettura reattiva UI (`StateFlow`) al posto del polling.
 - [x] Aggiornamento intelligente di Tile e Complication (basato su delta BPM).
+- [x] Funzione Pausa/Riprendi per la ricarica (disattivazione fisica sensore).
+- [x] Notifica interattiva con azioni rapide per pausa/ripresa.
 
 ## Prossimi passi
 - [ ] Aggiunta di un grafico storico del battito.
