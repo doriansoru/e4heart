@@ -151,15 +151,16 @@ class MyCanvasRenderer(
 
         // 4. BATTITO (In fondo)
         val bpm = HeartRateService.currentBpm
+        val isPaused = HeartRateService.isPausedGlobal
         
-        // Colore battito: Rosso se allerta, altrimenti grigio tenue in ambient o bianco in attivo
+        // Colore battito: Rosso se allerta, grigio se in pausa o ambient, altrimenti bianco
         heartPaint.color = when {
             HeartRateService.isAlertingGlobal -> Color.RED
-            isAmbient -> ambientMainColor
+            isPaused || isAmbient -> ambientMainColor
             else -> Color.WHITE
         }
         
-        val bpmText = if (bpm > 0) bpm.toString() else "--"
+        val bpmText = if (isPaused) "||" else (if (bpm > 0) bpm.toString() else "--")
         
         canvas.drawText(bpmText, centerX, centerY + 140f, heartPaint)
         canvas.drawText(context.getString(R.string.watchface_bpm_unit), centerX, centerY + 180f, labelPaint)

@@ -14,8 +14,9 @@ class HeartComplicationService : SuspendingComplicationDataSourceService() {
 
     override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationData {
         val prefs = getSharedPreferences("e4heart_prefs", android.content.Context.MODE_PRIVATE)
+        val isPaused = prefs.getBoolean("paused", false)
         val bpm = prefs.getInt("last_bpm", HeartRateService.currentBpm)
-        val text = if (bpm > 0) bpm.toString() else "--"
+        val text = if (isPaused) "||" else (if (bpm > 0) bpm.toString() else "--")
         return createComplicationData(text, request.complicationType)
     }
 

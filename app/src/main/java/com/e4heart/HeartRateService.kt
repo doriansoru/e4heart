@@ -62,12 +62,17 @@ class HeartRateService : Service(), SensorEventListener {
     companion object {
         const val CHANNEL_ID = "HeartRateChannel"
         const val NOTIFICATION_ID = 1
+        const val ACTION_PAUSE = "com.e4heart.ACTION_PAUSE"
+        const val ACTION_RESUME = "com.e4heart.ACTION_RESUME"
         
         private val _bpmFlow = MutableStateFlow(0)
         val bpmFlow = _bpmFlow.asStateFlow()
 
         private val _alertFlow = MutableStateFlow(false)
         val alertFlow = _alertFlow.asStateFlow()
+
+        private val _pausedFlow = MutableStateFlow(false)
+        val pausedFlow = _pausedFlow.asStateFlow()
         
         // Esposti come var/val per retrocompatibilità limitata (MyWatchFaceService usa currentBpm)
         var currentBpm: Int
@@ -77,6 +82,10 @@ class HeartRateService : Service(), SensorEventListener {
         var isAlertingGlobal: Boolean
             get() = _alertFlow.value
             private set(value) { _alertFlow.value = value }
+
+        var isPausedGlobal: Boolean
+            get() = _pausedFlow.value
+            private set(value) { _pausedFlow.value = value }
     }
 
     override fun onCreate() {
@@ -88,6 +97,10 @@ class HeartRateService : Service(), SensorEventListener {
         
         handler.postDelayed(watchdogRunnable, 15000)
         
+        // Carica stato pausa iniziale
+        val prefs = getSharedPreferences("e4heart_prefs", Context.MODE_PRIVATE)
+        isPausedGlobal = prefs.getBoolean("paused", false)
+
         // Chiama startForeground il prima possibile
         val notification = createNotification()
         try {
@@ -138,8 +151,17 @@ class HeartRateService : Service(), SensorEventListener {
     private var isSensorRegistered = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        android.util.Log.d("e4heart", "Service onStartCommand")
+        android.util.Log.d("e4heart", "Service onStartCommand: action=${intent?.action}")
         
+        when (intent?.action) {
+            ACTION_PAUSE -> {
+                setPaused(true)
+            }
+            ACTION_RESUME -> {
+                setPaused(false)
+            }
+        }
+
         // Obbligatorio chiamare startForeground immediatamente
         val notification = createNotification()
         try {
@@ -148,39 +170,79 @@ class HeartRateService : Service(), SensorEventListener {
             } else {
                 startForeground(NOTIFICATION_ID, notification)
             }
-            android.util.Log.d("e4heart", "startForeground chiamato con successo")
         } catch (e: Exception) {
             android.util.Log.e("e4heart", "Errore in startForeground", e)
         }
         
         loadSettings()
-        
-        if (!isSensorRegistered) {
-            heartRateSensor?.let {
-                val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
-                isSensorRegistered = registered ?: false
-                android.util.Log.d("e4heart", "Registrazione listener sensore: $isSensorRegistered")
-            }
-        } else {
-            android.util.Log.d("e4heart", "Sensore già registrato, salto")
-        }
+        updateSensorState()
         
         return START_STICKY
+    }
+
+    private fun setPaused(paused: Boolean) {
+        isPausedGlobal = paused
+        getSharedPreferences("e4heart_prefs", Context.MODE_PRIVATE)
+            .edit().putBoolean("paused", paused).apply()
+        
+        if (paused) {
+            currentBpm = 0
+            isAlerting = false
+            isAlertingGlobal = false
+            updateComplication()
+            updateTile()
+        }
+        
+        updateNotification()
+        updateSensorState()
+    }
+
+    private fun updateSensorState() {
+        if (isPausedGlobal) {
+            if (isSensorRegistered) {
+                sensorManager?.unregisterListener(this)
+                isSensorRegistered = false
+                android.util.Log.d("e4heart", "Sensore rimosso (PAUSA)")
+            }
+        } else {
+            if (!isSensorRegistered) {
+                heartRateSensor?.let {
+                    val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+                    isSensorRegistered = registered ?: false
+                    android.util.Log.d("e4heart", "Sensore registrato: $isSensorRegistered")
+                }
+            }
+        }
     }
 
     private fun createNotification(): Notification {
         val intent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val contentText = if (isAlerting) getString(R.string.service_alert_msg) else getString(R.string.service_monitoring_msg)
+        val contentText = when {
+            isPausedGlobal -> getString(R.string.service_paused_msg)
+            isAlerting -> getString(R.string.service_alert_msg)
+            else -> getString(R.string.service_monitoring_msg)
+        }
 
-        return NotificationCompat.Builder(this, CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.service_active_title))
             .setContentText(contentText)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
-            .build()
+
+        if (isPausedGlobal) {
+            val resumeIntent = Intent(this, HeartRateService::class.java).apply { action = ACTION_RESUME }
+            val resumePendingIntent = PendingIntent.getService(this, 1, resumeIntent, PendingIntent.FLAG_IMMUTABLE)
+            builder.addAction(android.R.drawable.ic_media_play, getString(R.string.action_resume), resumePendingIntent)
+        } else {
+            val pauseIntent = Intent(this, HeartRateService::class.java).apply { action = ACTION_PAUSE }
+            val pausePendingIntent = PendingIntent.getService(this, 2, pauseIntent, PendingIntent.FLAG_IMMUTABLE)
+            builder.addAction(android.R.drawable.ic_media_pause, getString(R.string.action_pause), pausePendingIntent)
+        }
+
+        return builder.build()
     }
 
     private fun createNotificationChannel() {

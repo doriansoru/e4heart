@@ -11,6 +11,9 @@
     
     <string name="service_active_title">e4heart Active</string>
     <string name="service_monitoring_msg">Monitoring heart rate...</string>
+    <string name="service_paused_msg">Monitoring paused (Charging?)</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
     <string name="service_alert_msg">WARNING: High heart rate! Please rest.</string>
     <string name="notification_channel_name">Heart Rate Monitoring</string>
     

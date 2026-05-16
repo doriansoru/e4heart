@@ -11,6 +11,9 @@
     
     <string name="service_active_title">e4heart Attivo</string>
     <string name="service_monitoring_msg">Monitoraggio battito in corso...</string>
+    <string name="service_paused_msg">Monitoraggio in pausa (In carica?)</string>
+    <string name="action_pause">Pausa</string>
+    <string name="action_resume">Riprendi</string>
     <string name="service_alert_msg">ATTENZIONE: Battito alto! Riposati.</string>
     <string name="notification_channel_name">Monitoraggio Cardiaco</string>
     

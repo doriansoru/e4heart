@@ -56,12 +56,28 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             // Usiamo il Flow esposto dal servizio
             val bpmValue by HeartRateService.bpmFlow.collectAsState()
             val isAlerting by HeartRateService.alertFlow.collectAsState()
+            val isPaused by HeartRateService.pausedFlow.collectAsState()
 
-            WearApp(bpmValue, rhrState.floatValue, isAlerting) { newValue ->
-                rhrState.floatValue = newValue
-                saveSettings(newValue)
-                startHeartRateService() // Riavvia per aggiornare parametri
-            }
+            WearApp(
+                bpm = bpmValue,
+                rhr = rhrState.floatValue,
+                isAlerting = isAlerting,
+                isPaused = isPaused,
+                onRhrChange = { newValue ->
+                    rhrState.floatValue = newValue
+                    saveSettings(newValue)
+                    startHeartRateService() // Riavvia per aggiornare parametri
+                },
+                onTogglePause = {
+                    val action = if (isPaused) HeartRateService.ACTION_RESUME else HeartRateService.ACTION_PAUSE
+                    val intent = Intent(this, HeartRateService::class.java).apply { this.action = action }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(intent)
+                    } else {
+                        startService(intent)
+                    }
+                }
+            )
         }
     }
 
@@ -132,7 +148,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 }
 
 @Composable
-fun WearApp(bpm: Int, rhr: Float, isAlerting: Boolean, onRhrChange: (Float) -> Unit) {
+fun WearApp(
+    bpm: Int,
+    rhr: Float,
+    isAlerting: Boolean,
+    isPaused: Boolean,
+    onRhrChange: (Float) -> Unit,
+    onTogglePause: () -> Unit
+) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val threshold = rhr + 15
     val recoveryLimit = rhr + 10
@@ -186,15 +209,34 @@ fun WearApp(bpm: Int, rhr: Float, isAlerting: Boolean, onRhrChange: (Float) -> U
                     item {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = if (bpm > 0) bpm.toString() else "--",
+                                text = if (isPaused) "||" else (if (bpm > 0) bpm.toString() else "--"),
                                 fontSize = 44.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isAlerting) Color.Red else Color.White
+                                color = if (isAlerting) Color.Red else (if (isPaused) Color.Gray else Color.White)
                             )
                             Text(
-                                androidx.compose.ui.res.stringResource(R.string.current_bpm_label),
+                                if (isPaused) androidx.compose.ui.res.stringResource(R.string.action_pause).uppercase() 
+                                else androidx.compose.ui.res.stringResource(R.string.current_bpm_label),
                                 fontSize = 10.sp,
                                 color = Color.Gray
+                            )
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(4.dp)) }
+
+                    // Pulsante Pausa/Riprendi
+                    item {
+                        Button(
+                            onClick = onTogglePause,
+                            modifier = Modifier.height(36.dp).fillMaxWidth(0.8f),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = if (isPaused) Color(0xFF4CAF50) else Color(0xFFF44336)
+                            )
+                        ) {
+                            Text(
+                                if (isPaused) androidx.compose.ui.res.stringResource(R.string.action_resume)
+                                else androidx.compose.ui.res.stringResource(R.string.action_pause)
                             )
                         }
                     }

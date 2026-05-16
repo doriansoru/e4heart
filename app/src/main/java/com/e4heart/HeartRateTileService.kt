@@ -22,8 +22,9 @@ class HeartRateTileService : TileService() {
         android.util.Log.d("e4heart", "Tile onTileRequest")
         try {
             val prefs = getSharedPreferences("e4heart_prefs", Context.MODE_PRIVATE)
+            val isPaused = prefs.getBoolean("paused", false)
             val bpm = prefs.getInt("last_bpm", HeartRateService.currentBpm)
-            val bpmText = if (bpm > 0) bpm.toString() else "--"
+            val bpmText = if (isPaused) "||" else (if (bpm > 0) bpm.toString() else "--")
 
             val tile = TileBuilders.Tile.Builder()
                 .setResourcesVersion("1")
