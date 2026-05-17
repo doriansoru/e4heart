@@ -40,7 +40,7 @@ class HeartRateService : Service(), SensorEventListener {
     private val handler = Handler(Looper.getMainLooper())
     private val watchdogRunnable = object : Runnable {
         override fun run() {
-            if (lastSensorEventTime > 0 && (System.currentTimeMillis() - lastSensorEventTime) > 35000) {
+            if (!isPausedGlobal && lastSensorEventTime > 0 && (System.currentTimeMillis() - lastSensorEventTime) > 35000) {
                 android.util.Log.w("e4heart", "Watchdog: sensore bloccato, reset in corso...")
                 resetSensor()
             }
@@ -51,6 +51,9 @@ class HeartRateService : Service(), SensorEventListener {
     private fun resetSensor() {
         sensorManager?.unregisterListener(this)
         isSensorRegistered = false
+        
+        if (isPausedGlobal) return
+
         heartRateSensor?.let {
             val registered = sensorManager?.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
             isSensorRegistered = registered ?: false
@@ -257,6 +260,8 @@ class HeartRateService : Service(), SensorEventListener {
     private var lastReportedBpm = 0
 
     override fun onSensorChanged(event: SensorEvent?) {
+        if (isPausedGlobal) return
+        
         if (event?.sensor?.type == Sensor.TYPE_HEART_RATE) {
             lastSensorEventTime = System.currentTimeMillis()
             val bpm = event.values[0].toInt()
@@ -294,6 +299,7 @@ class HeartRateService : Service(), SensorEventListener {
     }
 
     private fun checkThreshold(bpm: Int) {
+        if (isPausedGlobal) return
         val currentTime = System.currentTimeMillis()
         
         if (bpm > threshold) {
