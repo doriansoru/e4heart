@@ -31,6 +31,20 @@ La logica dell'app si basa sulle linee guida della **Workwell Foundation** per i
 - **Efficienza Energetica**: Logica di aggiornamento intelligente in background per Tile e Complication per preservare la batteria.
 - **UI Reattiva**: Architettura `StateFlow` per una fluidità superiore e minor consumo in primo piano.
 
+## Installazione
+Per installare l'applicazione sul tuo smartwatch Wear OS senza dover compilare il codice sorgente, segui questi passaggi:
+
+1. **Scarica l'APK**: Scarica l'ultimo file `app-debug.apk` dalla sezione [Releases](https://github.com/doriansoru/e4heart/releases) di questo repository direttamente sul tuo smartphone Android.
+2. **Installa Easy Fire Tools**: Installa sul tuo telefono l'applicazione **Easy Fire Tools** dal Google Play Store (un'app gratuita usata per trasferire file ai dispositivi indossabili).
+3. **Prepara l'orologio**: Assicurati che lo smartwatch Wear OS sia connesso alla stessa rete Wi-Fi del telefono. Sull'orologio, vai in **Impostazioni** > **Connettività** > **Wi-Fi**.
+4. **Invia l'applicazione all'orologio**:
+   - Apri **Easy Fire Tools** sul telefono.
+   - Tocca l'icona del menu (in alto a sinistra), vai in **Impostazioni** > **Indirizzo IP Fire TV / Wear OS** e seleziona il tuo orologio (oppure tocca **Trova** per cercarlo automaticamente).
+   - Torna alla schermata principale dell'app, seleziona la scheda **Custom APK** e scegli il file `app-debug.apk` scaricato al punto 1.
+   - Tocca l'icona di connessione in alto a destra, quindi tocca **Installa**.
+
+Al termine dell'operazione, l'app apparirà automaticamente nell'elenco delle applicazioni dell'orologio Wear OS.
+
 ## Guida allo sviluppo e compilazione
 Il progetto è un'applicazione Android nativa basata su Gradle. Puoi compilarla utilizzando i comandi semplificati del `Makefile` o direttamente tramite Gradle.
 

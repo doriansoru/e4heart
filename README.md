@@ -31,6 +31,20 @@ The app's logic is based on the **Workwell Foundation** guidelines for heart rat
 - **Energy Efficiency**: Smart background update logic for Tile and Complications to preserve battery.
 - **Reactive UI**: `StateFlow` architecture for superior smoothness and lower foreground power consumption.
 
+## Installation
+To install the app on your Wear OS smartwatch without compiling it from source, follow these steps:
+
+1. **Download the APK**: Download the latest `app-debug.apk` file from the [Releases](https://github.com/doriansoru/e4heart/releases) section of this repository directly onto your Android smartphone.
+2. **Install Easy Fire Tools**: On your Android phone, install **Easy Fire Tools** from the Google Play Store (a free app used to transfer files to wearable devices).
+3. **Prepare your watch**: Make sure your Wear OS watch is connected to the same Wi-Fi network as your phone. On the watch, go to **Settings** > **Connectivity** > **Wi-Fi**.
+4. **Send the app to your watch**:
+   - Open **Easy Fire Tools** on your phone.
+   - Tap the menu icon (top left), go to **Settings** > **Fire TV / Wear OS IP Address** and select your watch (or tap **Discover** to search for it automatically).
+   - Go back to the main screen of the app, tap the **Custom APK** tab, and select the downloaded `app-debug.apk` file.
+   - Tap the **Connect** icon at the top right, then tap **Install**.
+
+Once completed, the app will automatically appear in your Wear OS watch's app list.
+
 ## Development and Compilation Guide
 The project is a native Android application based on Gradle. You can compile it using simplified `Makefile` commands or directly via Gradle.
 
