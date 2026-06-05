@@ -165,9 +165,10 @@ class MyCanvasRenderer(
         canvas.drawText(bpmText, centerX, centerY + 140f, heartPaint)
         canvas.drawText(context.getString(R.string.watchface_bpm_unit), centerX, centerY + 180f, labelPaint)
         
-        // Ricarica batteria ogni minuto circa
-        if (zonedDateTime.second == 0 && (zonedDateTime.toInstant().toEpochMilli() - lastBatteryCheck > 1000)) {
-            lastBatteryCheck = zonedDateTime.toInstant().toEpochMilli()
+        // Ricarica la batteria ogni minuto circa (almeno 60 secondi dall'ultimo controllo)
+        val now = System.currentTimeMillis()
+        if (now - lastBatteryCheck >= 60000) {
+            lastBatteryCheck = now
             val batteryStatus: Intent? = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
             batteryLevel = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: batteryLevel
         }
